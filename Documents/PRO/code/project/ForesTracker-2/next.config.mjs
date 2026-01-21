@@ -18,10 +18,12 @@ const nextConfig = {
   },
   output: 'export',
   basePath: '/ForesTracker-2',
+  trailingSlash: true,
   experimental: {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
+    staticGenerationRetryCount: 1,
   },
 }
 
