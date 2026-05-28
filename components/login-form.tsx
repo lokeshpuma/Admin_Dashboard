@@ -40,7 +40,6 @@ export function LoginForm() {
     try {
       await signIn(values.email, values.password)
       router.push("/")
-      router.refresh()
     } catch (error) {
       toast({
         variant: "destructive",

@@ -1,84 +1,37 @@
-"use server"
+const SESSION_KEY = "session"
 
-import { cookies } from "next/headers"
-
-// This is a mock implementation for demonstration purposes
-// In a real application, you would use a proper authentication system
-
-type User = {
-  id: string
-  username: string
-  email: string
+function hasWindow() {
+  return typeof window !== "undefined"
 }
 
-export async function auth() {
-  // Create cookie store and then use it
-  const cookieStore = cookies()
-  const sessionCookie = cookieStore.get("session")
-
-  if (!sessionCookie) {
-    return null
-  }
-
-  // In a real app, you would verify the session token
-  // and fetch the user from your database
-  return {
-    user: {
-      id: "user_123",
-      username: "forestadmin",
-      email: "admin@forestdb.com",
-    },
-  }
+export function hasSession(): boolean {
+  if (!hasWindow()) return false
+  return !!localStorage.getItem(SESSION_KEY)
 }
 
-export async function signIn(email: string, password: string) {
-  const cookieStore = cookies()
-  // In a real app, you would verify credentials against your database
-  if (email === "demo@example.com" && password === "password123") {
-    // Set a session cookie
-    cookieStore.set("session", "mock_session_token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-      path: "/",
-    })
-
-    return {
-      success: true,
-    }
-  }
-
-  // For demo purposes, allow any login
-  cookieStore.set("session", "mock_session_token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 7, // 1 week
-    path: "/",
-  })
-
-  return {
-    success: true,
-  }
+export async function signIn(_email: string, _password: string) {
+  if (!hasWindow()) return { success: false }
+  localStorage.setItem(SESSION_KEY, "mock_session_token")
+  return { success: true }
 }
 
-export async function registerUser(username: string, email: string, password: string) {
-  // In a real app, you would create a new user in your database
-  // For demo purposes, we'll just return success
+export async function registerUser(
+  _username: string,
+  _email: string,
+  _password: string
+) {
   return {
     success: true,
     user: {
       id: "user_" + Math.random().toString(36).substring(2, 9),
-      username,
-      email,
+      username: _username,
+      email: _email,
     },
   }
 }
 
 export async function signOut() {
-  const cookieStore = cookies()
-  cookieStore.delete("session")
-  return {
-    success: true,
-  }
+  if (!hasWindow()) return { success: false }
+  localStorage.removeItem(SESSION_KEY)
+  return { success: true }
 }
-

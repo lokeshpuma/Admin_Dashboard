@@ -30,6 +30,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -39,6 +40,7 @@ import {
 } from "@/components/ui/popover";
 
 export function AppSidebar() {
+  const router = useRouter();
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -76,7 +78,7 @@ export function AppSidebar() {
 
   const handleSignOut = async () => {
     await signOut();
-    window.location.href = "/login";
+    router.push("/login");
   };
 
   const toggleTheme = () => {
