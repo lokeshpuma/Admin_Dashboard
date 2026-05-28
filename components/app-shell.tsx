@@ -7,12 +7,20 @@ import { hasSession } from "@/lib/auth"
 
 const PUBLIC_PATHS = ["/login", "/register"]
 
+function normalizePath(path: string) {
+  if (path.length > 1 && path.endsWith("/")) {
+    return path.slice(0, -1)
+  }
+  return path
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [ready, setReady] = useState(false)
 
-  const isPublicPath = PUBLIC_PATHS.includes(pathname)
+  const normalizedPath = normalizePath(pathname)
+  const isPublicPath = PUBLIC_PATHS.includes(normalizedPath)
 
   useEffect(() => {
     const authenticated = hasSession()
